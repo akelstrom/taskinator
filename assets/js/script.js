@@ -67,7 +67,9 @@ var createTaskEl = function(taskDataObj) {
      tasksToDoEl.appendChild(listItemEl);
 
      taskDataObj.id = taskIdCounter;
-     tasks.push(taskDataObj);  
+     tasks.push(taskDataObj);
+     
+     saveTasks();
 
      //increase task counter for next unique id
      taskIdCounter++;
@@ -75,6 +77,7 @@ var createTaskEl = function(taskDataObj) {
 
 var createTaskActions = function(taskId) {
     var actionContainerEl = document.createElement("div");
+    //for CSS styling purposes
     actionContainerEl.className = "task-actions";
 
     //create edit button
@@ -82,7 +85,6 @@ var createTaskActions = function(taskId) {
     editButtonEl.textContent = "Edit";
     editButtonEl.className = "btn edit-btn";
     editButtonEl.setAttribute("data-task-id", taskId)
-
     actionContainerEl.appendChild(editButtonEl);
 
     //create delete button
@@ -90,14 +92,13 @@ var createTaskActions = function(taskId) {
     deleteButtonEl.textContent = "Delete";
     deleteButtonEl.className = "btn delete-btn";
     deleteButtonEl.setAttribute("data-task-id", taskId);
-
     actionContainerEl.appendChild(deleteButtonEl);
 
+    //create dropdown menu-status change
     var statusSelectEl = document.createElement("select");
     statusSelectEl.className = "select-status";
     statusSelectEl.setAttribute("name", "status-change");
     statusSelectEl.setAttribute("data-task-id", taskId);
-
     actionContainerEl.appendChild(statusSelectEl);
 
     var statusChoices = ["To Do", "In Progress", "Completed"];
@@ -107,7 +108,6 @@ var createTaskActions = function(taskId) {
         var statusOptionEl = document.createElement("option");
         statusOptionEl.textContent = statusChoices[i];
         statusOptionEl.setAttribute("value", statusChoices[i]);
-
         //apend to select
         statusSelectEl.appendChild(statusOptionEl);
     }
@@ -152,6 +152,8 @@ var deleteTask = function(taskId) {
     // reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr;
     
+    saveTasks();
+    
 };
 
 var editTask = function(taskId) {
@@ -185,6 +187,8 @@ var completeEditTask = function(taskName, taskType, taskId) {
       }
     };
 
+    saveTasks();
+
     alert("Task Updated!");
 
     formEl.removeAttribute("data-task-id");
@@ -217,6 +221,7 @@ var taskStatusChangeHandler = function(event) {
           tasks[i].status = statusValue;
         }
       }
+      saveTasks();
 };
 
 var dragTaskHandler = function(event) {
@@ -263,6 +268,8 @@ var dropTaskHandler = function(event) {
             tasks[i].status = statusSelectEl.value.toLowerCase();
           }
       }
+
+      saveTasks();
 };
 
 var dragLeaveHandler = function(event) {
@@ -272,6 +279,9 @@ var dragLeaveHandler = function(event) {
         }
   }
 
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 //on a submit click, create a task-- submit event listener responds to entire form, with id of submit
 formEl.addEventListener("submit", taskFormHandler);
