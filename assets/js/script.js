@@ -283,6 +283,27 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+
+var loadTasks = function() {
+  
+  //get task items from local storage
+    var savedTasks = localStorage.getItem("tasks");
+    console.log(savedTasks)
+  //convert tasks from string format back into array of objects
+    if (!savedTasks) {
+      tasks = [];
+      return false;
+    }
+
+    savedTasks = JSON.parse(savedTasks);
+
+    // loop through savedTasks array
+for (var i = 0; i < savedTasks.length; i++) {
+  // pass each task object into the `createTaskEl()` function
+  createTaskEl(savedTasks[i]);
+}
+
+}
 //on a submit click, create a task-- submit event listener responds to entire form, with id of submit
 formEl.addEventListener("submit", taskFormHandler);
     
@@ -297,3 +318,5 @@ pageContentEl.addEventListener("dragover", dropZoneDragHandler);
 pageContentEl.addEventListener("drop", dropTaskHandler);
 
 pageContentEl.addEventListener("dragleave", dragLeaveHandler);
+
+loadTasks();
